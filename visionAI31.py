@@ -37,21 +37,22 @@ def main():
             bytes_data = picture.getvalue()
             base64_image = base64.b64encode(bytes_data).decode('utf-8')
             
-            chat = ChatOpenAI(model='gpt-4-vision-preview', max_tokens=256)
+            with st.spinner("Generating your quiz...🤓"):
+                chat = ChatOpenAI(model='gpt-4-vision-preview', max_tokens=256)
 
-            output = chat.invoke([
-                HumanMessage(
-                    content=[
-                        {"type": "text", "text": "What is this image about? Focus on detials and relpy in one line"},
-                        {"type": "image_url", 
-                        "image_url": {
-                            "url": "data:image/png;base64," + base64_image,
-                            "detail": "auto"
-                            }}
-                        ])
-            ])
-            
-            st.session_state.result = output
+                output = chat.invoke([
+                    HumanMessage(
+                        content=[
+                            {"type": "text", "text": "What is this image about? Focus on detials and relpy in one line"},
+                            {"type": "image_url", 
+                            "image_url": {
+                                "url": "data:image/png;base64," + base64_image,
+                                "detail": "auto"
+                                }}
+                            ])
+                ])
+                
+                st.session_state.result = output
             
     if st.session_state.result:
         st.info(st.session_state.result )                

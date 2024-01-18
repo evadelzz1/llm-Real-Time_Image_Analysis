@@ -1,24 +1,12 @@
-"""
-A user-friendly script designed to interface with the OpenAI GPT-4 Vision API.
-It provides an efficient way to analyze images using AI, 
-with capabilities extending to real-time analysis via webcam integration.
-This code file is structured to be easily understandable and modifiable, 
-catering to both beginners and experienced programmers. 
-Its primary function is to capture images, convert them into a suitable format, 
-and leverage GPT-4's advanced algorithms for detailed image analysis. 
-Perfect for projects in AI-driven image recognition and data processing
-"""
 import cv2, time, base64
 from dotenv import load_dotenv
 
-# from langchain.chat_models import ChatOpenAI
 from langchain.schema.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 
 def encode_image(image_url):
     with open(image_url, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
-
 
 if not load_dotenv():
     st.error(
@@ -29,6 +17,9 @@ if not load_dotenv():
 
 cap = cv2.VideoCapture(0) # 0 stands for very first webcam attach
 
+print("=" * 50)
+print("Look at the webcam and strike a pretty pose. And press any key")
+
 while True:
     ret, frame = cap.read()
 
@@ -36,11 +27,12 @@ while True:
         cv2.imshow('camera', frame)
 
         if cv2.waitKey(1) != -1:
-            filename = "webcam_capture.png"
+            filename = "./files/webcam_capture.png"
             cv2.imwrite(filename, frame)
             
             base64_image = encode_image(filename)
 
+            print("Analyze the picture.....")
             chat = ChatOpenAI(model='gpt-4-vision-preview', max_tokens=256)
 
             output = chat.invoke([
@@ -65,3 +57,19 @@ while True:
 
 cap.release() # release webcam
 cv2.destroyAllWindows() # close all openCV windows
+
+print("\n\n--> Check the captured files : ./files/webcam_capture.jpg")
+
+
+
+
+"""
+A user-friendly script designed to interface with the OpenAI GPT-4 Vision API.
+It provides an efficient way to analyze images using AI, 
+with capabilities extending to real-time analysis via webcam integration.
+This code file is structured to be easily understandable and modifiable, 
+catering to both beginners and experienced programmers. 
+Its primary function is to capture images, convert them into a suitable format, 
+and leverage GPT-4's advanced algorithms for detailed image analysis. 
+Perfect for projects in AI-driven image recognition and data processing
+"""
